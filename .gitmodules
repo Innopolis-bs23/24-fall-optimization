@@ -1,0 +1,3 @@
+[submodule "prog1"]
+	path = prog1
+	url = git@github.com:Polinanime/optimization_assigment_1.git
