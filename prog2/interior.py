@@ -25,9 +25,9 @@ def interior_point_method(c, A, x, eps: float, alpha: float, maximize: bool):
         aTaaT1a = np.dot(np.dot(np.transpose(A_prime), np.linalg.inv(np.dot(A_prime, np.transpose(A_prime)))), A_prime)
         P = np.eye(A.shape[1]) - aTaaT1a
         c_p = np.dot(P, c_prime)
-        
+
         nu = np.absolute(np.min(c_p))
-        if nu == 0:
+        if nu == 0 or nu == np.inf:
             print("Interior method did not converge")
             break
 
