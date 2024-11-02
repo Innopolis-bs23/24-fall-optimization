@@ -2,7 +2,7 @@ import numpy as np
 from interior import interior_point_method
 from simplex import simplex_method
 
-DEBUG = False
+DEBUG = True
 
 def read_data():
     if DEBUG:
@@ -40,12 +40,16 @@ def main():
     # Running interior point method (Assigment 2)
     interior_result = interior_point_method(c_np, A_np, x_np, eps, 0.5, maximize)
     print("Interior method result (alpha = 0.5): ")
-    print(*interior_result)
+    print("(", end="")
+    print(*interior_result, end="", sep=", ")
+    print(")")
     print("Solution=", np.dot(c_np, interior_result), sep="")
 
     interior_result = interior_point_method(c_np, A_np, x_np, eps, 0.9, maximize)
     print("Interior method result (alpha = 0.9): ")
-    print(*interior_result)
+    print("(", end="")
+    print(*interior_result, end="", sep=", ")
+    print(")")
     print("Solution=", np.dot(c_np, interior_result), sep="")
 
 if __name__ == "__main__":
