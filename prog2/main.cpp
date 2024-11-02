@@ -16,6 +16,7 @@
 #include <vector>
 #include <iomanip>
 #include <cmath>
+#include "simplex_wrapper.h"
 
 #define ALPHA 0.5
 
@@ -691,7 +692,8 @@ ColumnVector<T> interior(ColumnVector<T> c, Matrix<T> A, ColumnVector<T> x, doub
 {
     // Create ones vector with size n (number of variables)
     ColumnVector<T> ones(x.getRowsNumber());
-    for (int i = 0; i < x.getRowsNumber(); i++) {
+    for (int i = 0; i < x.getRowsNumber(); i++)
+    {
         ones.data[i][0] = 1;
     }
 
@@ -704,9 +706,11 @@ ColumnVector<T> interior(ColumnVector<T> c, Matrix<T> A, ColumnVector<T> x, doub
     ColumnVector<T> x_p(x.getRowsNumber());
     double nu;
 
-    while (true) {
+    while (true)
+    {
         Matrix<T> D(x.getRowsNumber(), x.getRowsNumber());
-        for (int j = 0; j < x.getRowsNumber(); j++) {
+        for (int j = 0; j < x.getRowsNumber(); j++)
+        {
             D.data[j][j] = x.data[j][0];
         }
 
@@ -717,32 +721,82 @@ ColumnVector<T> interior(ColumnVector<T> c, Matrix<T> A, ColumnVector<T> x, doub
         x_prev = x;
 
         nu = -1;
-        for (int i = 0; i < c_p.getRowsNumber(); i++) {
-            if (c_p.data[i][0] < 0 && nu < -c_p.data[i][0]) {
+        for (int i = 0; i < c_p.getRowsNumber(); i++)
+        {
+            if (c_p.data[i][0] < 0 && nu < -c_p.data[i][0])
+            {
                 nu = -c_p.data[i][0];
             }
         }
 
-        for (int i = 0; i < c_p.getRowsNumber(); i++) {
+        for (int i = 0; i < c_p.getRowsNumber(); i++)
+        {
             c_p.data[i][0] *= ALPHA / nu;
         }
 
         x_p = ones + c_p;
-        x = x_p;  // Update x for next iteration
+        x = x_p; // Update x for next iteration
 
-        if ((x_p - x_prev).computeNorm() < eps) {
+        if ((x_p - x_prev).computeNorm() < eps)
+        {
             break;
-        } else {
-            std::cout << "At iteration " << i << " we have x=\n" << x_p << std::endl;
+        }
+        else
+        {
+            std::cout << "At iteration " << i << " we have x=\n"
+                      << x_p << std::endl;
         }
         i++;
     }
     return x_p;
 }
 
+template <typename T>
+ColumnVector<T> simplex_method(ColumnVector<T> c, Matrix<T> A, ColumnVector<T> b, double eps, bool maximize)
+{
+    init_python();
+    PyObject *py_c = PyList_New(n);
+    PyObject *py_A = PyList_New(m);
+    PyObject *py_b = PyList_New(m);
+
+    // Fill c vector
+    for (int i = 0; i < n; i++)
+    {
+        PyList_SetItem(py_c, i, Py_BuildValue("d", c.data[i][0]));
+    }
+
+    // Fill A matrix
+    for (int i = 0; i < m; i++)
+    {
+        PyObject *row = PyList_New(n);
+        for (int j = 0; j < n; j++)
+        {
+            PyList_SetItem(row, j, Py_BuildValue("d", A.data[i][j]));
+        }
+        PyList_SetItem(py_A, i, row);
+    }
+
+    // Fill b vector
+    for (int i = 0; i < m; i++)
+    {
+        PyList_SetItem(py_b, i, Py_BuildValue("d", b.data[i][0]));
+    }
+
+    PyObject *py_result = call_simplex_method(py_c, py_A, py_b, eps, true);
+
+    std::cout << "Simplex result: \n"
+              << py_result << std::endl;
+    ColumnVector<double> result(n);
+    for (int i = 0; i < n; i++)
+    {
+        result.data[i][0] = PyFloat_AsDouble(PyList_GetItem(py_result, i));
+    }
+    return result;
+}
+
 int main()
 {
-    std::cout << "Input sizes of system: ";
+    std::cout << "Input sizes of system (n variables, m equations): ";
     int n, m;
     std::cin >> n >> m;
     while (n <= 0 || m <= 0)
@@ -772,8 +826,15 @@ int main()
     std::cout << "Input accuracy eps: ";
     std::cin >> eps;
 
-    ColumnVector<double> result = interior(c, A, x, eps);
-    std::cout << "Result: \n" << result << std::endl;
+    // Running simplex method from python code (Assigment 1)
+    ColumnVector<double> simplex_result = simplex_method(c, A, b, eps, true);
+    std::cout << "Simplex result: \n"
+              << simplex_result << std::endl;
+
+    // Running interior point method (Assigment 2)
+    ColumnVector<double> interior_result = interior(c, A, x, eps);
+    std::cout << "Interior result: \n"
+              << interior_result << std::endl;
 
     return 0;
 }
