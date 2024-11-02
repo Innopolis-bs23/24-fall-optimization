@@ -2,7 +2,7 @@ import numpy as np
 from interior import interior_point_method
 from simplex import simplex_method
 
-DEBUG = True
+DEBUG = False
 
 def read_data():
     if DEBUG:
