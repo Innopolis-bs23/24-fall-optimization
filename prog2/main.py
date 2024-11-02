@@ -2,7 +2,7 @@ import numpy as np
 from interior import interior_point_method
 from simplex import simplex_method
 
-DEBUG = True
+DEBUG = False
 
 def read_data():
     if DEBUG:
@@ -30,7 +30,9 @@ def main():
     _, _, _, soltuion, simplex_result, _ = simplex_method(c, A, b, eps, maximize)
     print("Simplex method result: ")
     print("X=", end="")
-    print(*simplex_result)
+    print("(", end="")
+    print(*simplex_result, end="", sep=", ")
+    print(")")
     print("Solution=", soltuion, sep="")
     print()
 
