@@ -752,7 +752,7 @@ ColumnVector<T> interior(ColumnVector<T> c, Matrix<T> A, ColumnVector<T> x, doub
 }
 
 template <typename T>
-ColumnVector<T> simplex_method(ColumnVector<T> c, Matrix<T> A, ColumnVector<T> b, double eps, bool maximize)
+ColumnVector<T> simplex_method(ColumnVector<T> c, Matrix<T> A, ColumnVector<T> b, double eps, int n, int m, bool maximize)
 {
     init_python();
     PyObject *py_c = PyList_New(n);
@@ -827,7 +827,7 @@ int main()
     std::cin >> eps;
 
     // Running simplex method from python code (Assigment 1)
-    ColumnVector<double> simplex_result = simplex_method(c, A, b, eps, true);
+    ColumnVector<double> simplex_result = simplex_method(c, A, b, eps, n, m, true);
     std::cout << "Simplex result: \n"
               << simplex_result << std::endl;
 
