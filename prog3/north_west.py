@@ -35,10 +35,9 @@ def main():
     ])
     
     x0, total_cost = north_west_corner_method(supply, demand, costs)
-    print("North-west corner x0:")
+    print("North-west corner matrix:")
     print(x0)
-    
-    print("Total transportation cost:")
+    print("Initial basic feasible solution by North-west:")
     print(total_cost)
 
 if __name__ == "__main__":
