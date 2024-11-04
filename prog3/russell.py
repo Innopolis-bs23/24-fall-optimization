@@ -76,7 +76,7 @@ def main():
         [8, 3, 3, 2]
     ])
     
-    total_cost, x0 = russells_approximation_method(supply, demand, costs)
+    x0, total_cost = russells_approximation_method(supply, demand, costs)
     print("Russell's approximation matrix")
     print(x0)
     print("Initial basic feasible solution by Russell's:")

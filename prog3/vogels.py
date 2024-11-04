@@ -95,7 +95,7 @@ def main():
         [8, 3, 3, 2]
     ])
     
-    total_cost, x0 = vogels_approximation_method(supply, demand, costs)
+    x0, total_cost = vogels_approximation_method(supply, demand, costs)
     print("Vogel's approximation matrix")
     print(x0)
     print("Initial basic feasible solution by Vogel's:")
