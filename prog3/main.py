@@ -4,7 +4,7 @@ from north_west import north_west_corner_method
 from vogels import vogels_approximation_method
 from russell import russells_approximation_method
 
-DEBUG = True
+DEBUG = False
 
 def read_data():
     if DEBUG:
