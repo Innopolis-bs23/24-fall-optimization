@@ -1,9 +1,10 @@
 import numpy as np
+from tabulate import tabulate
 from north_west import north_west_corner_method
 from vogels import vogels_approximation_method
 from russell import russells_approximation_method
 
-DEBUG = False
+DEBUG = True
 
 def read_data():
     if DEBUG:
@@ -28,6 +29,12 @@ def main():
     supply, demand, costs = read_data()
 
     if sum(supply) == sum(demand) and len(supply) == 3 and len(demand) == 4:
+        table_data = []
+        for i, row in enumerate(costs):
+            table_data.append([f"S{i + 1}"] + [str(val) for val in row] + [str(supply[i])])
+        table_data.append(["Demand"] + demand + [""])
+        headers = ["", "D1", "D2", "D3", "D4", "Supply"]
+        print(tabulate(table_data, headers=headers, tablefmt="grid"))
         nw_x0, nw_ans = north_west_corner_method(supply, demand, costs)
         print("North-west corner matrix: ")
         print(nw_x0)
